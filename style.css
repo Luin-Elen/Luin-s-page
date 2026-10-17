@@ -1,0 +1,265 @@
+/* ==========================================================
+   李宁的个人网页 · style.css
+   背景：白 → 银 → 高级灰 → 深灰 → 黑 的平滑慢渐变
+   风格：清新但正式
+   ========================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth; /* 点击导航项平滑滚动到对应板块 */
+}
+
+body {
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  color: #1c1c1c;
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* 全页慢渐变背景：多停靠点拉长过渡区间，形成缓慢柔和的色彩变化 */
+  background: linear-gradient(180deg,
+      #ffffff 0%,
+      #f6f6f5 8%,
+      #e6e6e4 18%,
+      #cfcfcd 30%,
+      #a9a9a7 42%,
+      #7b7b79 55%,
+      #4a4a48 68%,
+      #262625 82%,
+      #000000 100%);
+  background-attachment: fixed; /* 渐变固定于视口，滚动时色彩随高度缓慢演变 */
+}
+
+/* ============ GitHub 入口（右上角悬浮） ============ */
+.github-entry {
+  position: fixed;
+  top: 22px;
+  right: 26px;
+  z-index: 10;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(6px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.github-entry:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.github-entry svg {
+  width: 24px;
+  height: 24px;
+  fill: #111;
+}
+
+/* ============ 首屏 ============ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.hero-title {
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #0b0b0b; /* 黑色大字 */
+  text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.35),
+               1px 1px 2px rgba(0, 0, 0, 0.28); /* 双层阴影增强立体感 */
+}
+
+.hero-sub {
+  margin-top: 1.1rem;
+  font-size: clamp(1rem, 2.2vw, 1.4rem);
+  letter-spacing: 0.14em;
+  color: #3c3c3c;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+/* ============ 翻盖导航盒 ============ */
+.nav-box {
+  position: relative;
+  width: 250px;
+  height: 172px;
+  margin-top: 3.2rem;
+  perspective: 1000px; /* 3D 翻页视角 */
+  outline: none;
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.22));
+}
+
+/* 盒身（内衬） */
+.nav-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.2));
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
+}
+
+/* 盒内导航项：默认隐藏，开盖后淡入 */
+.nav-inner {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 14px 18px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease 0.18s, transform 0.4s ease 0.18s;
+}
+
+.nav-inner a {
+  display: block;
+  text-align: center;
+  padding: 0.52rem 0;
+  font-size: 1.06rem;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em; /* 抵消末字间距，保证视觉居中 */
+  color: #141414;
+  text-decoration: none;
+  border-radius: 9px;
+  transition: background 0.25s ease;
+}
+
+.nav-inner a:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
+
+/* 盒盖：绕顶部合页向上翻开 */
+.nav-lid {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border-radius: 16px;
+  background: linear-gradient(165deg, #fdfdfd 0%, #ececeb 55%, #dcdcdb 100%);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9),
+              0 6px 16px rgba(0, 0, 0, 0.14);
+  transform-origin: top center;
+  transition: transform 0.65s cubic-bezier(0.22, 0.68, 0.28, 1),
+              box-shadow 0.65s ease;
+}
+
+/* 悬停 / 键盘聚焦时开盖；移开自动合上 */
+.nav-box:hover .nav-lid,
+.nav-box:focus-within .nav-lid {
+  transform: rotateX(-104deg);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.16);
+}
+
+.nav-box:hover .nav-inner,
+.nav-box:focus-within .nav-inner {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 盒盖上的装饰：MENU 字样 + 拉手 */
+.nav-lid-word {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  color: #555;
+}
+
+.nav-lid-handle {
+  width: 46px;
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #c7c7c5, #9d9d9b);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7);
+}
+
+/* ============ 内容板块 ============ */
+.panel {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 22vh 24px 10vh;
+  scroll-margin-top: 40px; /* 锚点跳转时留出呼吸空间 */
+}
+
+.panel h2 {
+  position: relative;
+  padding-bottom: 14px;
+  color: #f4f4f3;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+}
+
+.panel h2::after {
+  content: "";
+  position: absolute;
+  left: 2px;
+  bottom: 0;
+  width: 56px;
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0));
+}
+
+/* 内容槽：留空待填充，仅保留容器样式 */
+.slot {
+  margin-top: 2.2rem;
+  min-height: 280px;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ============ 页脚 ============ */
+footer {
+  text-align: center;
+  padding: 6vh 0 5vh;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+}
+
+/* ============ 移动端适配 ============ */
+@media (max-width: 480px) {
+  .nav-box {
+    width: 220px;
+    height: 164px;
+  }
+
+  .nav-inner a {
+    font-size: 0.98rem;
+    letter-spacing: 0.22em;
+    text-indent: 0.22em;
+  }
+
+  .panel {
+    padding-top: 16vh;
+  }
+
+  .panel h2 {
+    letter-spacing: 0.28em;
+  }
+}
