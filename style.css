@@ -233,6 +233,63 @@ body {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+/* ============ 课程作业列表 ============ */
+.work-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 26px;
+}
+
+.work-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 22px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.work-item:hover {
+  background: rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateX(4px);
+}
+
+.work-num {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.work-body {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.work-text {
+  color: #f0f0ef;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+}
+
+.work-tag {
+  align-self: flex-start;
+  padding: 3px 12px;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+}
+
 /* ============ 页脚 ============ */
 footer {
   text-align: center;
