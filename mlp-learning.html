@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学习，搭建 MLP · Luin Elen</title>
+  <link rel="stylesheet" href="mlp-learning.css">
+</head>
+<body>
+
+  <!-- 背景泡泡容器：JS 动态生成大小不一的泡泡 -->
+  <div class="bubbles" aria-hidden="true"></div>
+
+  <header class="mlp-hero">
+    <a class="back-link" href="index.html#journey">← 返回主页</a>
+    <h1 class="mlp-title">学习，搭建 MLP</h1>
+    <p class="mlp-sub">从数学推导到代码实现的一次完整探索</p>
+  </header>
+
+  <main class="mlp-main">
+
+    <!-- ============ 学习轨迹 ============ -->
+    <section class="mlp-section">
+      <h2 class="mlp-h2">学习轨迹</h2>
+
+      <div class="timeline-wrap">
+        <div class="timeline-date">2026年10月25日</div>
+
+        <!-- 彩虹渐变箭头 -->
+        <div class="timeline-arrow" aria-hidden="true">
+          <div class="timeline-arrow-line"></div>
+          <div class="timeline-arrow-head"></div>
+        </div>
+
+        <!-- 6 个等距轨迹点 -->
+        <div class="timeline-track">
+          <div class="timeline-item">
+            <div class="timeline-label">详细了解异或问题 MLP 算法</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">8:10 — 8:25</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label">学习 TensorFlow 相关语法知识</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">8:25 — 9:00</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label">初步理解范例代码</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">9:00 — 9:25</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label">尝试修改范例代码</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">9:25 — 9:50</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label">手动搭建 MLP</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">10:00 — 10:50</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label">整理所学并发布到个人网页</div>
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">11:00 — 11:30</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 知识谱图 ============ -->
+    <section class="mlp-section">
+      <h2 class="mlp-h2">知识谱图</h2>
+      <p class="mlp-hint">点击节点让它"生长"出下一层；左右两图分别代表数学推导与代码实现，对应的末端节点会用直线相连。</p>
+      <div class="graph-wrap">
+        <svg id="knowledge-graph" class="knowledge-graph" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="img" aria-label="MLP 知识谱图"></svg>
+      </div>
+      <div class="graph-legend">
+        <button id="graph-reset" class="graph-reset" type="button">重置谱图</button>
+      </div>
+    </section>
+
+    <!-- ============ 作品版本迭代 ============ -->
+    <section class="mlp-section">
+      <h2 class="mlp-h2">作品版本迭代</h2>
+
+      <div class="version-carousel" id="version-carousel">
+        <!-- 左 1/4 翻页热区 -->
+        <button class="version-nav version-nav-prev" type="button" aria-label="上一版本" title="上一版本">
+          <span class="version-nav-icon">‹</span>
+        </button>
+
+        <!-- 卡片轨道：JS 控制 translateX -->
+        <div class="version-track" id="version-track">
+
+          <!-- 第 1 代 -->
+          <article class="version-card" data-version="1">
+            <header class="version-header">
+              <span class="version-badge">v1</span>
+              <h3 class="version-title">手写梯度下降 · 原生态实现</h3>
+              <p class="version-desc">手动用 <code>GradientTape</code> 计算梯度、用 <code>Adam</code> 更新参数，最贴近数学推导的一版。</p>
+            </header>
+            <pre class="version-code"><code>import tensorflow as tf
+tf.keras.backend.set_floatx("float64")
+
+x = tf.constant([[0.,0.],[0.,1.],[1.,0.],[1.,1.]])
+target = tf.constant([[0.],[1.],[1.],[0.]])
+
+W = tf.Variable([[2.,-2.],[-2.,2.]])
+b_hidden = tf.Variable([-1.,-1.])
+v = tf.Variable([[3.],[3.]])
+b_output = tf.Variable([-2.5])
+parameters = [W, b_hidden, v, b_output]
+
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.03)
+for epoch in range(1, 301):
+    with tf.GradientTape() as tape:
+        hidden = tf.sigmoid(tf.matmul(x, W) + b_hidden)
+        logits = tf.matmul(hidden, v) + b_output
+
+        loss = tf.reduce_mean(
+            tf.nn.sigmoid_cross_entropy_with_logits(
+                labels=target, logits=logits))
+
+    gradients = tape.gradient(loss, parameters)
+    optimizer.apply_gradients(zip(gradients, parameters))
+
+hidden = tf.sigmoid(tf.matmul(x, W) + b_hidden)
+prob = tf.sigmoid(tf.matmul(hidden, v) + b_output)
+print(tf.cast(prob &gt;= 0.5, tf.int32).numpy().ravel())</code></pre>
+          </article>
+
+          <!-- 第 2 代 -->
+          <article class="version-card" data-version="2">
+            <header class="version-header">
+              <span class="version-badge">v2</span>
+              <h3 class="version-title">Keras Sequential · 高层封装</h3>
+              <p class="version-desc">改用 <code>Sequential</code> 与 <code>Dense</code> 层，把训练循环交给 <code>model.fit</code>，代码更简洁。</p>
+            </header>
+            <pre class="version-code"><code>import tensorflow as tf
+
+tf.keras.backend.set_floatx("float64")
+
+x = tf.constant([[0.,0.], [0.,1.], [1.,0.], [1.,1.]], dtype=tf.float64)
+target = tf.constant([[0.], [1.], [1.], [0.]], dtype=tf.float64)
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(units=2, activation='sigmoid', input_shape=(2,)),
+    tf.keras.layers.Dense(units=1, activation=None)
+])
+
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=0.03),
+    loss=tf.keras.losses.BinaryCrossentropy(from_logits=True)
+)
+
+model.fit(x, target, epochs=300, verbose=0)
+
+logits = model(x)
+prob = tf.sigmoid(logits)
+pred = tf.cast(prob &gt;= 0.5, tf.int32)
+print(pred.numpy().ravel())</code></pre>
+          </article>
+
+        </div>
+
+        <!-- 右 1/4 翻页热区 -->
+        <button class="version-nav version-nav-next" type="button" aria-label="下一版本" title="下一版本">
+          <span class="version-nav-icon">›</span>
+        </button>
+
+        <!-- 页码指示 -->
+        <div class="version-dots" id="version-dots" aria-hidden="true"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="mlp-footer">© Luin Elen · 学习历程</footer>
+
+  <script src="mlp-learning.js"></script>
+</body>
+</html>

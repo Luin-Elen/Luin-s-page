@@ -290,6 +290,22 @@ body {
   border-radius: 999px;
 }
 
+/* ============ 学习历程：跳转链接 ============ */
+.journey-link {
+  color: #f0f0ef;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.35);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.journey-link:hover {
+  color: #ffd9a8;
+  border-color: rgba(255, 217, 168, 0.6);
+}
+
 /* ============ 页脚 ============ */
 footer {
   text-align: center;
