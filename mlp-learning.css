@@ -491,7 +491,7 @@ body {
   top: 0;
   bottom: 0;
   width: 25%;
-  z-index: 5;
+  z-index: 8;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -536,49 +536,51 @@ body {
   font-size: 2rem;
   font-weight: 300;
   color: #a06a2c;
-  background: rgba(255, 240, 218, 0.7);
-  border: 1px solid rgba(217, 162, 95, 0.4);
+  background: rgba(255, 240, 218, 0.85);
+  border: 1px solid rgba(217, 162, 95, 0.5);
   border-radius: 50%;
-  box-shadow: 0 4px 12px rgba(91, 58, 30, 0.12);
-  opacity: 0;
-  transform: scale(0.7);
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 4px 12px rgba(91, 58, 30, 0.18);
+  opacity: 0.85; /* 常显，不依赖悬停 */
+  transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
   pointer-events: none;
 }
 
-.version-carousel:hover .version-nav-icon {
+.version-nav:hover .version-nav-icon {
   opacity: 1;
-  transform: scale(1);
+  transform: scale(1.06);
+  background: rgba(255, 226, 180, 1);
 }
 
-/* 翻页热区禁用状态（到达边界时） */
-.version-nav[disabled] {
-  cursor: default;
-  pointer-events: none;
-}
-
-/* 页码小圆点 */
+/* 页码小圆点（可点击） */
 .version-dots {
   position: absolute;
   bottom: 18px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 8px;
-  z-index: 6;
+  gap: 10px;
+  z-index: 9;
 }
 
 .version-dots .dot {
-  width: 8px;
-  height: 8px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: rgba(160, 106, 44, 0.3);
+  border: none;
+  cursor: pointer;
+  padding: 0;
   transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.version-dots .dot:hover {
+  background: rgba(160, 106, 44, 0.6);
+  transform: scale(1.15);
 }
 
 .version-dots .dot.active {
   background: #d08344;
-  transform: scale(1.3);
+  transform: scale(1.35);
 }
 
 /* ============ 页脚 ============ */

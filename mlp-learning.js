@@ -452,27 +452,38 @@ function bindReset() {
 
   let current = 0;
 
-  // 生成页码圆点
+  // 生成页码圆点（可点击跳转）
   for (let i = 0; i < total; i++) {
-    const d = document.createElement("span");
+    const d = document.createElement("button");
+    d.type = "button";
     d.className = "dot" + (i === 0 ? " active" : "");
+    d.setAttribute("aria-label", "第 " + (i + 1) + " 版");
+    d.addEventListener("click", (e) => {
+      e.stopPropagation();
+      goTo(i);
+    });
     dotsBox.appendChild(d);
   }
   const dots = dotsBox.querySelectorAll(".dot");
 
   function goTo(idx) {
-    if (idx < 0) idx = 0;
-    if (idx > total - 1) idx = total - 1;
+    // 循环翻页：到尾后再向右回到第 0 页，反之亦然
+    if (idx < 0) idx = total - 1;
+    if (idx > total - 1) idx = 0;
     current = idx;
-    track.style.transform = `translateX(-${current * 100}%)`;
+    track.style.transform = "translateX(-" + current * 100 + "%)";
     dots.forEach((d, i) => d.classList.toggle("active", i === current));
-    btnPrev.disabled = current === 0;
-    btnNext.disabled = current === total - 1;
   }
 
   btnPrev.addEventListener("click", () => goTo(current - 1));
   btnNext.addEventListener("click", () => goTo(current + 1));
 
-  // 初始化按钮可用态
+  // 键盘左右方向键也可翻页
+  carousel.setAttribute("tabindex", "0");
+  carousel.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") goTo(current - 1);
+    if (e.key === "ArrowRight") goTo(current + 1);
+  });
+
   goTo(0);
 })();
