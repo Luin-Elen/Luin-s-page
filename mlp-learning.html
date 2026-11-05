@@ -66,6 +66,49 @@
           </div>
         </div>
       </div>
+
+      <!-- 第二条时间线：11月3日，配色反向 -->
+      <div class="timeline-wrap timeline-wrap--alt">
+        <div class="timeline-date timeline-date--alt">2026年11月3日</div>
+
+        <div class="timeline-arrow timeline-arrow--reverse" aria-hidden="true">
+          <div class="timeline-arrow-line"></div>
+          <div class="timeline-arrow-head"></div>
+        </div>
+
+        <div class="timeline-track">
+          <div class="timeline-item">
+            <div class="timeline-label timeline-label--wide">思考新方法，最终确定「升维法」与「多线分割」</div>
+            <div class="timeline-dot timeline-dot--alt"></div>
+            <div class="timeline-time timeline-time--alt">18:40 — 19:10</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label timeline-label--wide">理论上探究「升维法」</div>
+            <div class="timeline-dot timeline-dot--alt"></div>
+            <div class="timeline-time timeline-time--alt">19:10 — 19:40</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label timeline-label--wide">学习并编写相应代码</div>
+            <div class="timeline-dot timeline-dot--alt"></div>
+            <div class="timeline-time timeline-time--alt">20:00 — 20:20</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label timeline-label--wide">探究「多线分割」，了解基础决策树理论</div>
+            <div class="timeline-dot timeline-dot--alt"></div>
+            <div class="timeline-time timeline-time--alt">20:20 — 20:55</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label timeline-label--wide">编写决策树代码</div>
+            <div class="timeline-dot timeline-dot--alt"></div>
+            <div class="timeline-time timeline-time--alt">21:10 — 21:40</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-label timeline-label--wide">交由 AI Agent 把成果添加到个人页面</div>
+            <div class="timeline-dot timeline-dot--alt"></div>
+            <div class="timeline-time timeline-time--alt">21:40 — 21:55</div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ============ 知识谱图 ============ -->
@@ -160,6 +203,96 @@ logits = model(x)
 prob = tf.sigmoid(logits)
 pred = tf.cast(prob &gt;= 0.5, tf.int32)
 print(pred.numpy().ravel())</code></pre>
+          </article>
+
+          <!-- 第 3 页：升维法的思考过程 -->
+          <article class="version-card version-card--prose" data-version="3">
+            <header class="version-header">
+              <span class="version-badge">思考</span>
+              <h3 class="version-title">升维法 · 思路从哪来</h3>
+              <p class="version-desc">二维平面上线性不可分，那就把点搬到更高的空间里试试。</p>
+            </header>
+            <div class="version-prose">
+              <p>我个人思考后得出一个新的解决方法——给原来在二维平面的样本点升维，使之在空间中，或许可以解出来（姑且称为「升维法」）。</p>
+              <p>面对如何升维的问题，很显然可以通过获取新的属性来增加维度，但是受限于题干信息，我无法获得新的信息，于是便开始挖掘原有 x、y 与标签之间或许有什么没用到的隐含关系。显而易见，当 x = y 时，标签为 1，反之为 0，但这是我们希望机器最终学会的规则，不可以直接使用。鉴于现实中不同的属性之间有互相的联系，我们可以使用已知的 x、y 来构造新的数据，以此模拟新属性，或许会有成效。</p>
+              <p>注意到取 x、y 之和并不能取得较好的效果，而取积、和平方、平方和都会有不错的效果。进一步探索更为普适的构造方法，由对前面的学习启发得到可以引入 sigmoid 来进行非线性扭曲，所得新数据基本上可以满足本题的需求。</p>
+              <p>考虑到在其他题目条件下扭曲后仍存在不小的共线可能，于是不再打算从二维直接到三维四点不共面，只聚焦于变换后共面的情况来打补丁，或许，可以通过让「小的更小，大的更大」的方法来实现将各个点从同一个平面中转移至同一个非平面中，姑且将上述操作称为「错裂」。如果只是线性操作，由前面探索的经验可知，往往无法成功「错裂」，于是继续使用 sigmoid 函数来进行非线性操作。</p>
+              <p>到此为止，「非线性错裂」我个人并未作数学上的论证尝试，也并未设计具体计算来进行代码实现，只是告诉了 DeepSeek，询问它「非线性错裂」的普适性如何，并得到了肯定的回答。上述讨论仅是提高多升一维的解题效率的一次探索，实际操作中可以提升多维，以此减小失败率，个人感觉已经足够了。反思后觉察到，如果升太多维度，或许会出现基础数据使用过滥而使分类器不准确的情况，但目前并不知道升多少维度合适，或许这也正是探究「错裂」的必要性。</p>
+              <p>下一页的代码实现仅是通过简单的 z = x·y 的线性升维来解决异或问题，因为个人认为这已经足够证明「升维法」的可行性。</p>
+            </div>
+          </article>
+
+          <!-- 第 4 页：v3 升维法 -->
+          <article class="version-card" data-version="4">
+            <header class="version-header">
+              <span class="version-badge">v3</span>
+              <h3 class="version-title">升维法 · 用 z = x₁·x₂ 把四点拉到三维</h3>
+              <p class="version-desc">手工构造第三个特征，把二维不可分变成三维可分，再用单层 Dense 划平面。</p>
+            </header>
+            <pre class="version-code"><code>import tensorflow as tf
+import numpy as np
+
+tf.keras.backend.set_floatx("float64")
+
+x_original = tf.constant([[0.,0.], [0.,1.], [1.,0.], [1.,1.]], dtype=tf.float64)
+y_target = tf.constant([[0.], [1.], [1.], [0.]], dtype=tf.float64)
+
+x3 = x_original[:, 0:1] * x_original[:, 1:2]
+
+x_3d = tf.concat([x_original, x3], axis=1)
+
+print("升维后的输入数据 x_3d (X1, X2, X3):")
+print(x_3d.numpy())
+print("-" * 40)
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(1, activation=None, input_shape=(3,))
+])
+
+model.compile(
+    optimizer=tf.keras.optimizers.Adam(learning_rate=0.1),
+    loss=tf.keras.losses.BinaryCrossentropy(from_logits=True)
+)
+
+model.fit(x_3d, y_target, epochs=200, verbose=0)
+
+logits = model(x_3d)
+prob = tf.sigmoid(logits)
+pred = tf.cast(prob &gt;= 0.5, tf.int32).numpy().ravel()
+
+print("升维后的预测结果:", pred)
+
+W, b = model.layers[0].get_weights()
+print(f"\n模型学到的平面方程参数: W={W.ravel()}, b={b}")
+print(f"平面方程: {W[0][0]:.2f}*x1 + {W[1][0]:.2f}*x2 + {W[2][0]:.2f}*x3 + {b[0]:.2f} = 0")
+print("神经网络(升维法) 预测结果:", pred)</code></pre>
+          </article>
+
+          <!-- 第 5 页：v4 多线分割 · 决策树 -->
+          <article class="version-card" data-version="5">
+            <header class="version-header">
+              <span class="version-badge">v4</span>
+              <h3 class="version-title">多线分割 · 决策树划分区域</h3>
+              <p class="version-desc">不升维，改为用多条直线切分平面，让不同区域输出同一类别。</p>
+            </header>
+            <div class="version-prose version-prose--compact">
+              <p>除了「升维法」之外，我还想到了另一种方法：我们可以通过两条直线来区分四个点，可以把整个坐标系划成三或四个区域，令其中多个区域中的点同输出即可。经过学习了解，得知「决策树流派」正符合我的想法，于是写了如下代码。</p>
+            </div>
+            <pre class="version-code"><code>from sklearn import tree
+import numpy as np
+
+x = np.array([[0.,0.], [0.,1.], [1.,0.], [1.,1.]])
+y = np.array([0, 1, 1, 0])
+
+model_tree = tree.DecisionTreeClassifier(max_depth=2)
+
+model_tree.fit(x, y)
+
+pred_tree = model_tree.predict(x)
+print("决策树(划分区域法) 预测结果:", pred_tree)
+
+print("\n决策树内部的切分逻辑：")
+print(tree.export_text(model_tree, feature_names=['x1', 'x2']))</code></pre>
           </article>
 
         </div>
